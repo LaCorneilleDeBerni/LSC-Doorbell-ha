@@ -17,11 +17,11 @@ DEFAULT_RTSP_PORT = 554
 DEFAULT_RTSP_PATH = "/stream0"
 
 # Tuya Datapoints (DPS) pour LSC Doorbell art. 3208999
-DP_DOORBELL_BUTTON = 185   # Appui bouton sonnette
-DP_MOTION_DETECT  = 115   # Détection de mouvement
-DP_PRIVACY_MODE   = 104   # Mode privé (désactive caméra)
-DP_RECORDING      = 150   # Enregistrement SD
-DP_CHIME          = 136   # Sonnerie intérieure
+# Découverts expérimentalement avec discover_dps.py
+DP_DOORBELL_BUTTON = 212   # Appui bouton sonnette + photo (JSON base64)
+DP_MOTION_DETECT   = 149   # Détection de mouvement (True/False)
+DP_BATTERY         = 145   # Niveau de batterie (%)
+DP_STATUS          = 146   # Statut général
 
 # Events fired by the integration
 EVENT_DOORBELL_PRESSED = "lsc_doorbell_button_pressed"
