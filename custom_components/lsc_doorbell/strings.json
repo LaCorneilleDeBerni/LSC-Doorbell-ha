@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurer la sonnette LSC",
+        "description": "Entrez les informations de connexion récupérées avec `tinytuya wizard`.",
+        "data": {
+          "ip_address": "Adresse IP de la sonnette",
+          "device_id": "Device ID (identifiant Tuya)",
+          "local_key": "Local Key (clé locale)",
+          "protocol_version": "Version du protocole Tuya",
+          "rtsp_port": "Port RTSP (défaut : 554)",
+          "rtsp_path": "Chemin RTSP (défaut : /stream0)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter à la sonnette. Vérifiez l'IP et que la sonnette est allumée.",
+      "invalid_auth": "Local Key incorrecte. Vérifiez le Device ID et la Local Key.",
+      "unknown": "Erreur inattendue. Consultez les logs pour plus de détails."
+    },
+    "abort": {
+      "already_configured": "Cette sonnette est déjà configurée."
+    }
+  }
+}
