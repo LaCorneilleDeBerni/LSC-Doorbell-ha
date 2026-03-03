@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure LSC Doorbell",
+        "description": "Enter the connection details retrieved with tinytuya wizard.",
+        "data": {
+          "ip_address": "IP Address",
+          "device_id": "Device ID",
+          "local_key": "Local Key",
+          "protocol_version": "Tuya Protocol Version",
+          "rtsp_port": "RTSP Port",
+          "rtsp_path": "RTSP Path"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect. Check the IP address.",
+      "invalid_auth": "Invalid Local Key.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This doorbell is already configured."
+    }
+  }
+}
