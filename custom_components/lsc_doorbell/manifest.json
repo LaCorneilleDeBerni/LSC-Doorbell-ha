@@ -2,11 +2,11 @@
   "domain": "lsc_doorbell",
   "name": "LSC Smart Connect Video Doorbell",
   "version": "1.0.0",
-  "documentation": "https://github.com/TON_USERNAME/lsc_doorbell_ha",
-  "issue_tracker": "https://github.com/TON_USERNAME/lsc_doorbell_ha/issues",
+  "documentation": "https://github.com/LaCorneilleDeBerni/LSC-Doorbell-ha",
+  "issue_tracker": "https://github.com/LaCorneilleDeBerni/LSC-Doorbell-ha/issues",
   "requirements": ["tinytuya>=1.13.0"],
   "dependencies": [],
-  "codeowners": ["@TON_USERNAME"],
+  "codeowners": ["@LaCorneilleDeBerni"],
   "iot_class": "local_push",
   "config_flow": true
 }
