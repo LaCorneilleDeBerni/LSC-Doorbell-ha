@@ -19,8 +19,6 @@ from .const import (
     DOMAIN,
     DP_DOORBELL_BUTTON,
     DP_MOTION_DETECT,
-    EVENT_DOORBELL_PRESSED,
-    EVENT_MOTION_DETECTED,
 )
 from . import LSCDoorbellCoordinator
 
@@ -32,7 +30,6 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Configure les binary sensors."""
     coordinator: LSCDoorbellCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([
         LSCDoorbellButtonSensor(coordinator, entry),
@@ -40,11 +37,20 @@ async def async_setup_entry(
     ])
 
 
+def _device_info(entry: ConfigEntry) -> DeviceInfo:
+    return DeviceInfo(
+        identifiers={(DOMAIN, entry.entry_id)},
+        name="LSC Smart Connect Doorbell",
+        manufacturer="Action / LSC",
+        model="Video Doorbell Rechargeable (3208999)",
+    )
+
+
 class LSCDoorbellButtonSensor(CoordinatorEntity, BinarySensorEntity):
     """Capteur : appui sur le bouton de la sonnette.
 
-    Passe à ON brièvement lors d'un appui, puis revient à OFF.
-    Déclenche aussi l'événement lsc_doorbell_button_pressed dans HA.
+    Expose aussi l'URL de la photo prise lors de l'appui
+    dans les attributs de l'entité.
     """
 
     _attr_has_entity_name = True
@@ -58,15 +64,11 @@ class LSCDoorbellButtonSensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_unique_id = f"{entry.entry_id}_doorbell_button"
         self._is_on = False
         self._last_triggered: datetime | None = None
+        self._last_image_url: str | None = None
 
     @property
     def device_info(self) -> DeviceInfo:
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._entry.entry_id)},
-            name="LSC Smart Connect Doorbell",
-            manufacturer="Action / LSC",
-            model="Video Doorbell Rechargeable (3208999)",
-        )
+        return _device_info(self._entry)
 
     @property
     def is_on(self) -> bool:
@@ -76,29 +78,27 @@ class LSCDoorbellButtonSensor(CoordinatorEntity, BinarySensorEntity):
     def extra_state_attributes(self) -> dict:
         return {
             "last_triggered": self._last_triggered.isoformat() if self._last_triggered else None,
+            "last_image_url": self._last_image_url,
         }
 
     @callback
     def _handle_coordinator_update(self) -> None:
-        """Réagit aux mises à jour des DPS Tuya."""
         data = self.coordinator.data or {}
         val = data.get(str(DP_DOORBELL_BUTTON), data.get(DP_DOORBELL_BUTTON))
 
         if val is not None:
-            self._is_on = bool(val)
-            if self._is_on:
-                self._last_triggered = datetime.now()
-                _LOGGER.info("🔔 Bouton sonnette activé")
+            # DP 212 reçoit un payload base64, pas un bool
+            # On considère ON dès qu'on reçoit quelque chose
+            self._is_on = True
+            self._last_triggered = datetime.now()
+            self._last_image_url = self.coordinator.last_image_url
+            _LOGGER.info("🔔 Bouton sonnette — image : %s", self._last_image_url)
 
         self.async_write_ha_state()
 
 
 class LSCMotionSensor(CoordinatorEntity, BinarySensorEntity):
-    """Capteur : détection de mouvement par la sonnette.
-
-    Passe à ON quand la sonnette détecte un mouvement.
-    Déclenche aussi l'événement lsc_doorbell_motion_detected dans HA.
-    """
+    """Capteur : détection de mouvement."""
 
     _attr_has_entity_name = True
     _attr_name = "Détection de mouvement"
@@ -114,12 +114,7 @@ class LSCMotionSensor(CoordinatorEntity, BinarySensorEntity):
 
     @property
     def device_info(self) -> DeviceInfo:
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._entry.entry_id)},
-            name="LSC Smart Connect Doorbell",
-            manufacturer="Action / LSC",
-            model="Video Doorbell Rechargeable (3208999)",
-        )
+        return _device_info(self._entry)
 
     @property
     def is_on(self) -> bool:
@@ -140,6 +135,5 @@ class LSCMotionSensor(CoordinatorEntity, BinarySensorEntity):
             self._is_on = bool(val)
             if self._is_on:
                 self._last_triggered = datetime.now()
-                _LOGGER.info("🚶 Mouvement détecté")
 
         self.async_write_ha_state()
