@@ -1,4 +1,5 @@
 # 🔔 LSC Smart Connect Video Doorbell — Home Assistant Integration
+NON FONCTIONAL FOR NOW
 
 Intégration **100% locale** (sans cloud, sans appli LSC) pour la sonnette LSC Smart Connect Video Doorbell Rechargeable.
 
